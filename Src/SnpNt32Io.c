@@ -16,6 +16,7 @@ SnpGetMac (
   PPACKET_OID_DATA        OidData;
   LPADAPTER	              Adapter;
   INT32                   Success;
+  INT32                   Index;
 
   Adapter = PacketOpenAdapter(Name);
 
@@ -39,6 +40,25 @@ SnpGetMac (
   ZeroMemory (OidData->Data, NET_ETHER_ADDR_LEN);
 
   Success = PacketRequest(Adapter, FALSE, OidData);
+  for (Index = 0; Index < NET_ETHER_ADDR_LEN; Index++) {
+    if ((OidData->Data)[Index] != 0) {
+      break;
+    }
+  }
+  if (Index == NET_ETHER_ADDR_LEN) {
+    Success = 0;
+  }
+
+  if(Success)
+  {
+    printf("The MAC address of the adapter is %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n",
+      (OidData->Data)[0],
+      (OidData->Data)[1],
+      (OidData->Data)[2],
+      (OidData->Data)[3],
+      (OidData->Data)[4],
+      (OidData->Data)[5]);
+  }
 
   PacketCloseAdapter(Adapter);
 
