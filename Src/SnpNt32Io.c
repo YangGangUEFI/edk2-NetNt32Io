@@ -7,7 +7,51 @@ static SNP_NIC_INFO mSnpNicInfo[MAX_NIC_NUMBER];
 static UINT32       mNicCount;
 
 static
-INT32 
+INT32
+SnpCheckLinkStatus (
+  UINT8                   *Name
+  )
+{
+  PPACKET_OID_DATA        OidData;
+  LPADAPTER	              Adapter;
+  INT32                   Success;
+  INT32                   Ret;
+
+  Adapter = PacketOpenAdapter(Name);
+
+  if ((Adapter == NULL) || (Adapter->hFile == INVALID_HANDLE_VALUE)) {
+    return -1;
+  }
+
+  //
+  // Allocate a buffer then query the NIC driver to get the link state
+  //
+  OidData = malloc (sizeof(PACKET_OID_DATA) + sizeof(NDIS_LINK_STATE));
+
+  if (OidData == NULL) {
+    PacketCloseAdapter(Adapter);
+    return -1;
+  }
+
+  OidData->Oid    = OID_GEN_LINK_STATE;
+  OidData->Length = sizeof(NDIS_LINK_STATE);
+  ZeroMemory (OidData->Data, sizeof(NDIS_LINK_STATE));
+
+  Success = PacketRequest(Adapter, FALSE, OidData);
+  PacketCloseAdapter(Adapter);
+
+  if (Success) {
+    Ret =  (((NDIS_LINK_STATE *)OidData->Data)->MediaConnectState == MediaConnectStateConnected) ? 0 : -1;
+    free (OidData);
+    return Ret;
+  }
+
+  free (OidData);
+  return -1;
+}
+
+static
+INT32
 SnpGetMac (
   UINT8                   *Name,
   EFI_MAC_ADDRESS         *Mac
@@ -132,6 +176,11 @@ SnpInitialize (
       continue;
     }
 
+    if (SnpCheckLinkStatus(Dev->name) != 0) {
+      pcap_close (Pcap);
+      continue;
+    }
+
     mSnpNicInfo[Count].Interface = Dev;
     mSnpNicInfo[Count].Pcap      = Pcap;
     mSnpNicInfo[Count].Mac       = Mac; 
@@ -143,6 +192,8 @@ SnpInitialize (
   }
 
   pcap_freealldevs (AllDevs);
+
+  printf("Number of NICs found: %d\n", Count);
 
   *Num = Count;
   return 1;
