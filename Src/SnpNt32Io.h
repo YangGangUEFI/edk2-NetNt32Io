@@ -57,40 +57,40 @@ typedef struct {
 } EFI_ADAPTER_INFO;
 #pragma pack()
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpInitialize (
-               UINT32                  *AdapterCnt, 
-               EFI_ADAPTER_INFO        *AdapterInfo 
+               UINT32                  *AdapterCnt,
+               EFI_ADAPTER_INFO        *AdapterInfo
                );
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpFinalize (
              VOID
              );
 
 SNPNT32_IO_API
-INT32 
+INT32
 SnpSetReceiveFilter (
-                     UINT32                  Index, 
-                     UINT32                  Enable, 
+                     UINT32                  Index,
+                     UINT32                  Enable,
                      UINT32                  MCastFilterCnt,
                      EFI_MAC_ADDRESS         *MCastFilter
                      );
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpReceive (
             UINT32                  Index,
             UINT32                  *BufferSize,
             UINT8                   *Buffer
             );
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpTransmit (
-             UINT32                  Index, 
+             UINT32                  Index,
              UINT32                  HeaderSize,
              UINT32                  BufferSize,
              VOID                    *Buffer,

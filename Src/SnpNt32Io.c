@@ -66,9 +66,9 @@ SnpGetMac (
 
   if ((Adapter == NULL) || (Adapter->hFile == INVALID_HANDLE_VALUE))	{
     return -1;
-  }	
+  }
 
-  // 
+  //
   // Allocate a buffer then query the NIC driver to get the MAC
   //
 
@@ -116,8 +116,8 @@ SnpGetMac (
   return -1;
 }
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpFinalize (
   VOID
   )
@@ -131,11 +131,11 @@ SnpFinalize (
   return 0;
 }
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpInitialize (
-  UINT32                  *Num, 
-  EFI_ADAPTER_INFO        *Adapters 
+  UINT32                  *Num,
+  EFI_ADAPTER_INFO        *Adapters
   )
 {
   pcap_if_t               *AllDevs;
@@ -149,7 +149,7 @@ SnpInitialize (
   Count = 0;
 
   //
-  //Retrieve the device list 
+  //Retrieve the device list
   //
   if (pcap_findalldevs(&AllDevs, ErrBuf) == -1) {
     return -1;
@@ -157,7 +157,7 @@ SnpInitialize (
 
 
   for(Dev = AllDevs; Dev != NULL; Dev = Dev->next){
-    Pcap = pcap_open_live (Dev->name, 65535, 1, 1, ErrBuf); 
+    Pcap = pcap_open_live (Dev->name, 65535, 1, 1, ErrBuf);
 
     if (Pcap == NULL) {
       continue;
@@ -183,7 +183,7 @@ SnpInitialize (
 
     mSnpNicInfo[Count].Interface = Dev;
     mSnpNicInfo[Count].Pcap      = Pcap;
-    mSnpNicInfo[Count].Mac       = Mac; 
+    mSnpNicInfo[Count].Mac       = Mac;
 
     Adapters[Count].Index        = Count;
     Adapters[Count].Mac          = Mac;
@@ -200,10 +200,10 @@ SnpInitialize (
 }
 
 SNPNT32_IO_API
-INT32 
+INT32
 SnpSetReceiveFilter (
-  UINT32                  Index, 
-  UINT32                  Enable, 
+  UINT32                  Index,
+  UINT32                  Enable,
   UINT32                  MCastFilterCnt,
   EFI_MAC_ADDRESS         *MCastFilter
   )
@@ -234,7 +234,7 @@ SnpSetReceiveFilter (
     strcat (FilterString,pBroadcast);
     strcat (FilterString," or ");
     strcat (FilterString,pPromiscuousMulticast);
-    goto SetFilter;  
+    goto SetFilter;
   }
 
   if (EFI_SIMPLE_NETWORK_RECEIVE_PROMISCUOUS_MULTICAST == (Enable & EFI_SIMPLE_NETWORK_RECEIVE_PROMISCUOUS_MULTICAST)) {
@@ -298,8 +298,8 @@ SetFilter:
   return 1;
 }
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpReceive (
   UINT32                  Index,
   UINT32                  *BufferSize,
@@ -325,10 +325,10 @@ SnpReceive (
   return Result;
 }
 
-SNPNT32_IO_API 
-INT32 
+SNPNT32_IO_API
+INT32
 SnpTransmit (
-  UINT32                  Index, 
+  UINT32                  Index,
   UINT32                  HeaderSize,
   UINT32                  BufferSize,
   UINT8                   *Buffer,
@@ -352,7 +352,7 @@ SnpTransmit (
 
     CopyMemory (Frame->SrcMac,     SrcAddr,      NET_ETHER_ADDR_LEN);
     CopyMemory (Frame->DstMac,     DestAddr,     NET_ETHER_ADDR_LEN);
-    CopyMemory (&Frame->Protocol, &ProtocolNet, sizeof(UINT16));  
+    CopyMemory (&Frame->Protocol, &ProtocolNet, sizeof(UINT16));
   }
 
   if (pcap_sendpacket (Pcap, Buffer, (int)BufferSize) == -1) {
@@ -362,10 +362,10 @@ SnpTransmit (
   return 0;
 }
 
-BOOL APIENTRY 
-DllMain ( 
-  HANDLE                        hModule, 
-  DWORD                         ul_reason_for_call, 
+BOOL APIENTRY
+DllMain (
+  HANDLE                        hModule,
+  DWORD                         ul_reason_for_call,
   LPVOID                        lpReserved
   )
 {
