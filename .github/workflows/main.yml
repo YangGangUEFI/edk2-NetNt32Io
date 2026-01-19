@@ -33,3 +33,10 @@ jobs:
 
     - name: Run nmake
       run: nmake PCAP=NPCAP
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SnpNt32Io-Dll
+        path: Debug_x64/SnpNt32Io.dll
+        if-no-files-found: error
