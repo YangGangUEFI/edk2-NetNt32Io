@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+env:
+  NPCAP_SDK_URL: https://npcap.com/dist/npcap-sdk-1.16.zip
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download and Extract Npcap SDK
+      run: |
+        New-Item -ItemType Directory -Force -Path npcap
+        Invoke-WebRequest -Uri ${{ env.NPCAP_SDK_URL }} -OutFile npcap-sdk.zip
+        Expand-Archive -Path npcap-sdk.zip -DestinationPath npcap
+        Remove-Item npcap-sdk.zip
+      shell: powershell
+
+    - name: Set up MSVC Dev Cmd
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Run nmake
+      run: nmake PCAP=NPCAP
