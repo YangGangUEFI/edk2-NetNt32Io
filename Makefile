@@ -30,7 +30,7 @@ WINPCAP_DIR = ".\npcap"
 WINPCAP_DIR = ".\WpdPack"
 !ENDIF
 TARGET      = DEBUG
-ARCH        = IA32
+ARCH        = X64
 
 #
 #WINPCAP_LIBPATH is the directory that contains the WinPcap developer's library
