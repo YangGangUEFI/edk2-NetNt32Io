@@ -24,7 +24,11 @@
 #The TARGET can be either DEBUG or RELEASE. Adapt these two directives to your need
 #The ARCH can be either IA32 or X64. Adapt these two directives to your need
 #
+!IF "$(PCAP)" == "NPCAP"
+WINPCAP_DIR = ".\npcap"
+!ELSE
 WINPCAP_DIR = ".\WpdPack"
+!ENDIF
 TARGET      = DEBUG
 ARCH        = IA32
 
@@ -32,9 +36,9 @@ ARCH        = IA32
 #WINPCAP_LIBPATH is the directory that contains the WinPcap developer's library
 #
 !IF "$(ARCH)" == "IA32"
-WINPCAP_LIB = ".\WpdPack\Lib"
+WINPCAP_LIB = "$(WINPCAP_DIR)\Lib"
 !ELSE
-WINPCAP_LIB = ".\WpdPack\Lib\x64"
+WINPCAP_LIB = "$(WINPCAP_DIR)\Lib\x64"
 !ENDIF
 
 #
